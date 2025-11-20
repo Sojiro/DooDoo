@@ -27,11 +27,11 @@
       <ion-item-sliding *ngFor="let todo of todoService.todos$ | async">
         <ion-item>
           <ion-checkbox slot="start" [checked]="todo.isDone" (ionChange)="toggleTodo(todo)"></ion-checkbox>
-          <ion-label [class.done]="todo.isDone">{{ todo.title }}</ion-label>
+          <ion-label [class.done]="todo.isDone" (click)="toggleTodo(todo)">{{ todo.title }}</ion-label>
         </ion-item>
 
-        <ion-item-options side="end">
-          <ion-item-option color="danger" (click)="deleteTodo(todo)">
+        <ion-item-options side="end" (ionSwipe)="deleteTodo(todo)">
+          <ion-item-option color="danger" expandable="true" (click)="deleteTodo(todo)">
             <ion-icon slot="icon-only" name="trash"></ion-icon>
           </ion-item-option>
         </ion-item-options>
