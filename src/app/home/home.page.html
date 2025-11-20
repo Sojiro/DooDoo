@@ -41,5 +41,9 @@
     <div *ngIf="(todoService.todos$ | async)?.length === 0" class="empty-state">
       <p>No todos yet. Add one above!</p>
     </div>
+
+    <div class="celebration-banner" *ngIf="showCelebration">
+      <h1>{{ celebrationMessage }}</h1>
+    </div>
   </div>
 </ion-content>
