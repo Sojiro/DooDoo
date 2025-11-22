@@ -109,7 +109,8 @@ export class HomePage {
     });
   }
 
-  deleteTodo(todo: Todo) {
+  async deleteTodo(todo: Todo) {
+    await Haptics.impact({ style: ImpactStyle.Medium });
     this.todoService.deleteTodo(todo.id);
   }
 }
