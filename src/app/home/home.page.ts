@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Todo, TodoService } from '../services/todo.service';
 import { ToastController } from '@ionic/angular';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import { LocalNotifications } from '@capacitor/local-notifications';
 import confetti from 'canvas-confetti';
 
 @Component({
@@ -10,7 +11,7 @@ import confetti from 'canvas-confetti';
   styleUrls: ['home.page.scss'],
   standalone: false,
 })
-export class HomePage {
+export class HomePage implements OnInit {
   newTodoTitle = '';
   showCelebration = false;
   celebrationMessage = '';
@@ -29,7 +30,26 @@ export class HomePage {
   constructor(
     public todoService: TodoService,
     private toastController: ToastController
-  ) { }
+  ) {
+    LocalNotifications.addListener('localNotificationActionPerformed', async (notification) => {
+      const actionId = notification.actionId;
+      const todoId = notification.notification.extra?.todoId;
+
+      if (todoId) {
+        if (actionId === 'tap' || actionId === 'MARK_DONE') {
+          await this.todoService.toggleTodo(todoId);
+
+          // Trigger celebration if app is in foreground
+          this.triggerHapticFeedback();
+          this.triggerConfetti();
+        }
+      }
+    });
+  }
+
+  async ngOnInit() {
+    await LocalNotifications.requestPermissions();
+  }
 
   addTodo() {
     if (this.newTodoTitle.trim().length > 0) {
